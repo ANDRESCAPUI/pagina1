@@ -1,18 +1,295 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="manifest" href="manifest.json">
+    <title>Mi Último Año de Secundaria 🎓</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fuente de Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Ipet Nro. 411</h1>
 
+    <!-- Encabezado -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>¡Promo 2029! 🎓</h1>
+            <p>El año más épico, inolvidable y lleno de emociones.</p>
+            <a href="#cuenta-regresiva" class="btn">Ver Cuenta Regresiva</a>
+        </div>
+    </header>
 
+    <main class="container">
+        <!-- Sección Cuenta Regresiva -->
+        <section id="cuenta-regresiva" class="card">
+            <h2>⏳ Tiempo para el Gran Final (Egresados)</h2>
+            <div class="timer">
+                <div class="time-box">
+                    <span id="days">804</span>
+                    <p>Días</p>
+                </div>
+                <div class="time-box">
+                    <span id="hours">8</span>
+                    <p>Horas</p>
+                </div>
+                <div class="time-box">
+                    <span id="minutes">1</span>
+                    <p>Minutos</p>
+                </div>
+                <div class="time-box">
+                    <span id="seconds">00</span>
+                    <p>Segundos</p>
+                </div>
+            </div>
+        </section>
 
+        <!-- Sección de Recuerdos / Lista de Deseos -->
+        <section class="card">
+            <h2>✨ Cosas por hacer antes de graduarnos</h2>
+            <ul class="bucket-list">
+                <li><input type="checkbox"> Hacer la campera de egresados</li>
+                <li><input type="checkbox"> Ganar los últimos intertribus / torneo</li>
+                <li><input type="checkbox"> Organizar el viaje de egresados</li>
+                <li><input type="checkbox"> Aprobar todas sin previo</li>
+                <li><input type="checkbox"> Festejar el último primer día (UPD)</li>
+            </ul>
+        </section>
 
+        <!-- Sección Interactiva: Muro de Frases -->
+        <section class="card">
+            <h2>💬 Muro de Recuerdos del Curso</h2>
+            <p>Deja una frase o recuerdo para el futuro:</p>
+            <div class="form-group">
+                <input type="text" id="userInput" placeholder="Escribe tu frase o apodo...">
+                <button id="addBtn" class="btn-small">Agregar</button>
+            </div>
+            <ul id="messageList" class="message-list">
+                <li>"El mejor grupo de todos, los voy a extrañar." - *Ejemplo*</li>
+            </ul>
+        </section>
+    </main>
 
-    
+    <!-- Pie de página -->
+    <footer>
+        <p>Hecho con ❤️ para recordar el mejor año de nuestras vidas.</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <style>*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Encabezado / Hero */
+.hero {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    font-weight: 300;
+}
+
+.btn {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #ff5252;
+}
+
+/* Contenedor Principal */
+.container {
+    max-width: 800px;
+    margin: -40px auto 40px auto;
+    padding: 0 20px;
+}
+
+/* Tarjetas */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.card h2 {
+    color: #2575fc;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* Cuenta Regresiva */
+.timer {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.time-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    width: 20%;
+    border: 2px solid #e9ecef;
+}
+
+.time-box span {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #6a11cb;
+}
+
+.time-box p {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Bucket List */
+.bucket-list {
+    list-style: none;
+}
+
+.bucket-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 1rem;
+}
+
+.bucket-list input {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+/* Muro Interactivo */
+.form-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-group input:focus {
+    border-color: #2575fc;
+}
+
+.btn-small {
+    background: #2575fc;
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-small:hover {
+    background: #1a5db6;
+}
+
+.message-list {
+    list-style: none;
+}
+
+.message-list li {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #6a11cb;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-size: 0.9rem;
+}
+</style>
+<script>// --- CUENTA REGRESIVA (Simulada para fin de año) ---
+// Puedes cambiar la fecha objetivo aquí (Año, Mes - 1, Día)
+const targetDate = new Date(2029, 11, 15, 23, 59, 59).getTime();
+
+function updateCountdown() {
+    const now = new Date().getTime();
+    const difference = targetDate - now;
+
+    if (difference < 0) {
+        document.getElementById("cuenta-regresiva").innerHTML = "<h2>¡Felicitaciones, Egresados 2026! 🎉🎓</h2>";
+        return;
+    }
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+    document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+    document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+    document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+}
+
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// --- MURO DE RECUERDOS INTERACTIVO ---
+const addBtn = document.getElementById("addBtn");
+const userInput = document.getElementById("userInput");
+const messageList = document.getElementById("messageList");
+
+addBtn.addEventListener("click", function() {
+    const text = userInput.value.trim();
+    if (text !== "") {
+        const newItem = document.createElement("li");
+        newItem.textContent = `"${text}"`;
+        messageList.appendChild(newItem);
+        userInput.value = ""; // Limpiar input
+    }
+});
+
+// Permitir agregar con la tecla Enter
+userInput.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        addBtn.click();
+    }
+});
+</script>
 </body>
 </html>
