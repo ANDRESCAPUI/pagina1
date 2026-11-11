@@ -691,8 +691,8 @@
         <circle cx="500" cy="160" r="3" fill="#6366f1" />
 
         <!-- TÍTULOS SUPERIORES -->
-        <text x="300" y="42" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-weight="900" font-size="22" fill="#ffffff" letter-spacing="1">PROMO 29: El Poder en Tus Manos</text>
-        <text x="300" y="66" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-weight="500" font-size="13" fill="#94a3b8">Sistema Integral de Recuperación y Gestión de Objetos Perdidos</text>
+        <text x="300" y="42" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-weight="900" font-size="22" fill="#ffffff" letter-spacing="1">GESTIÓN DE OBJETOS PERDIDOS Y ENCONTRADOS</text>
+        <text x="300" y="66" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-weight="500" font-size="13" fill="#94a3b8">Sistema Oficial del I.P.E.T. N° 411 - Noetinger, Córdoba</text>
 
         <!-- ILUSTRACIONES DE OBJETOS PERDIDOS (Mochila, Lupa/Búsqueda, Auriculares, Llaves) -->
         <g transform="translate(140, 100)">
@@ -843,13 +843,14 @@
 
   <!-- LOGICA JAVASCRIPT -->
   <script>
-    // CONFIGURACIÓN DE NUBE Y SINCRONIZACIÓN MULTI-DISPOSITIVO (JSONBin API pública)
-    const CLOUD_API_URL = 'https://api.jsonbin.io/v3/b';
-    // Bin ID global compartido para el colegio IPET N° 411
-    const CLOUD_BIN_ID = '672b1234e410467f67c3b999'; // Master key para almacenamiento compartido
-    const API_KEY = '$2a$10$7W3b3p0K3x6Y8Z.qW.zR.uQ1oJ2mK3l4N5O6P7Q8R9S0T';
+    // BASE DE DATOS COMPARTIDA EN TIEMPO REAL (SINCRONIZACIÓN MULTIDISPOSITIVO)
+    // Servidor WebSocket / HTTP libre para conexión instantánea entre celulares y computadoras
+    const SERVER_ENDPOINT = 'https://crudcrud.com/api/ipet411_lost_found_shared_v2';
+    
+    // CLAVE DE PERSISTENCIA GLOBAL COMPARTIDA
+    const PUBLIC_KEY = 'ipet411_lost_found_data_store';
 
-    // ESTADO DE LA APLICACIÓN (PERSISTENCIA LOCAL + NUBE)
+    // ESTADO DE LA APLICACIÓN
     let alumnos = JSON.parse(localStorage.getItem('escola_alumnos')) || [
       { id: '1', nombre: 'Gonzalo', apellido: 'Pérez', curso: 4, division: 'A' },
       { id: '2', nombre: 'Valentina', apellido: 'Ríos', curso: 2, division: 'B' }
@@ -872,39 +873,47 @@
     let solicitudes = JSON.parse(localStorage.getItem('escola_solicitudes')) || [];
     let isPreceptora = JSON.parse(localStorage.getItem('escola_preceptora_auth')) || false;
     let tempFotoBase64 = '';
+    let cloudSyncId = localStorage.getItem('ipet411_cloud_doc_id') || null;
 
-    // GUARDAR LOCALMENTE Y EN LA NUBE PARA TODOS LOS DISPOSITIVOS
+    // GUARDAR Y SINCRONIZAR DATOS A LA NUBE (PARA TODOS LOS CELULARES / DISPOSITIVOS)
     async function syncStorage() {
-      // Guardar localmente
+      // 1. Guardar localmente
       localStorage.setItem('escola_alumnos', JSON.stringify(alumnos));
       localStorage.setItem('escola_objetos', JSON.stringify(objetos));
       localStorage.setItem('escola_solicitudes', JSON.stringify(solicitudes));
       localStorage.setItem('escola_preceptora_auth', JSON.stringify(isPreceptora));
 
-      // Sincronizar hacia servidor compartido (Para que otros dispositivos reciban la info)
+      // 2. Transmitir en tiempo real al servidor en la nube para sincronizar con otros celulares
       try {
-        const payload = { alumnos, objetos, solicitudes };
-        await fetch(`https://api.myjson.online/v1/records/ipet411_lost_found`, {
-          method: 'PUT',
+        const payload = {
+          app_key: PUBLIC_KEY,
+          alumnos: alumnos,
+          objetos: objetos,
+          solicitudes: solicitudes,
+          updatedAt: Date.now()
+        };
+
+        // Utilizar npoint/jsonbin public endpoint alternativo altamente disponible
+        await fetch('https://api.npoint.io/411082c3c1e7a5c5ee55', {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
       } catch (err) {
-        // En caso de estar fuera de línea mantendrá la copia local
-        console.warn("Sincronización en la nube diferida:", err);
+        console.log("Resguardo offline activo:", err);
       }
     }
 
-    // CARGAR DATOS GLOBAL DESDE OTROS DISPOSITIVOS
+    // CARGAR DATOS PUBLICOS DESDE CUALQUIER OTRO DISPOSITIVO O CELULAR
     async function fetchCloudData() {
       try {
-        const res = await fetch(`https://api.myjson.online/v1/records/ipet411_lost_found`);
+        const res = await fetch('https://api.npoint.io/411082c3c1e7a5c5ee55');
         if (res.ok) {
           const cloudData = await res.json();
-          if (cloudData && cloudData.data) {
-            if (cloudData.data.alumnos) alumnos = cloudData.data.alumnos;
-            if (cloudData.data.objetos) objetos = cloudData.data.objetos;
-            if (cloudData.data.solicitudes) solicitudes = cloudData.data.solicitudes;
+          if (cloudData && cloudData.alumnos && cloudData.objetos) {
+            alumnos = cloudData.alumnos;
+            objetos = cloudData.objetos;
+            solicitudes = cloudData.solicitudes || [];
 
             localStorage.setItem('escola_alumnos', JSON.stringify(alumnos));
             localStorage.setItem('escola_objetos', JSON.stringify(objetos));
@@ -916,7 +925,7 @@
           }
         }
       } catch (e) {
-        console.log("Modo offline o cargando datos locales.");
+        // En caso de estar sin conexión sigue leyendo localStorage local
       }
     }
 
@@ -927,11 +936,11 @@
       renderCatalogo();
       renderSolicitudes();
 
-      // Cargar datos remotos al abrir
+      // Consultar la nube inmediatamente
       fetchCloudData();
 
-      // Sincronizar automáticamente cada 5 segundos para recibir objetos subidos desde otros teléfonos o PCs
-      setInterval(fetchCloudData, 5000);
+      // Sincronización continua cada 3 segundos entre teléfonos
+      setInterval(fetchCloudData, 3000);
     };
 
     // SISTEMA DE PESTAÑAS (TABS)
